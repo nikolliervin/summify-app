@@ -25,13 +25,23 @@ footer {
 
 form {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
-input[type="text"] {
-  width: calc(100% - 110px);
+input[type="text"],
+input[type="number"] {
+  width: calc(100% - 20px); /* Full width with some padding */
   padding: 10px;
   border: 1px solid #e2e2e2;
   border-radius: 6px;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #007bff; /* Focus border color */
+  outline: none; /* Remove default outline */
 }
 
 button {
@@ -41,6 +51,7 @@ button {
   background-color: #121212;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
@@ -51,8 +62,7 @@ button:hover {
   margin-top: 20px;
 }
 
-/* src/styles/App.css */
-
+/* Dropdown Styles */
 .select-dropdown {
   appearance: none; /* Remove default styling */
   background-color: #fafafa;
@@ -70,11 +80,6 @@ button:hover {
   outline: none; /* Remove default outline */
 }
 
-.select-dropdown option {
-  padding: 10px; /* Padding for options */
-}
-
-/* Optional: Add a custom arrow */
 .select-container {
   position: relative;
   display: inline-block;
@@ -89,61 +94,16 @@ button:hover {
   pointer-events: none; /* Prevent clicks on the arrow */
 }
 
-/* src/styles/App.css */
-
-.select-container {
-  margin-bottom: 20px; /* Space below the dropdown */
-}
-
-.input-container {
-  margin-bottom: 20px; /* Space below the input field */
-}
-
-form label {
-  display: block; /* Ensure labels are on their own line */
-  margin-bottom: 8px; /* Space between label and input */
-}
-
-/* src/styles/App.css */
-
-.form-group {
-  display: flex;
-  align-items: center; /* Vertically center items */
-  margin-bottom: 20px; /* Space below the form group */
-}
-
-.form-group label {
-  margin-right: 10px; /* Space between label and dropdown */
-  white-space: nowrap; /* Prevent label from wrapping */
-}
-
-.select-container {
-  flex-grow: 1; /* Allow dropdown to take up remaining space */
-}
-
-/* src/styles/App.css */
-
+/* Input Container */
 .input-container {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   margin-bottom: 20px; /* Space below the input container */
 }
 
+/* File Input and Upload Label */
 input[type="file"] {
   display: none; /* Hide the default file input */
-}
-
-.upload-label {
-  background-color: #007bff; /* Button color */
-  color: white; /* Text color */
-  padding: 10px 15px; /* Padding around the button */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Pointer on hover */
-  transition: background-color 0.3s; /* Smooth transition */
-}
-
-.upload-label:hover {
-  background-color: #0056b3; /* Darker on hover */
 }
 
 .upload-label {
@@ -154,6 +114,8 @@ input[type="file"] {
   border-radius: 5px; /* Rounded corners */
   cursor: pointer; /* Pointer on hover */
   transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+  display: inline-block; /* Ensure it behaves like a button */
+  margin-top: 5px; /* Space above the label */
 }
 
 .upload-label:hover {
@@ -161,25 +123,45 @@ input[type="file"] {
   color: white; /* Text color on hover */
 }
 
+/* Additional Input Styles */
 .input-field {
   padding: 10px; /* Padding inside the input */
   border: 1px solid #ccc; /* Border for input fields */
   border-radius: 5px; /* Rounded corners */
-  width: 200px; /* Set desired width */
+  width: 100%; /* Full width */
   margin-left: 10px; /* Space between label/button and input */
 }
 
+/* Consistent width for dropdowns */
 .dropdown {
-  width: 200px; /* Match dropdown width */
-}.input-field {
-  padding: 10px; /* Padding inside the input */
-  border: 1px solid #ccc; /* Border for input fields */
-  border-radius: 5px; /* Rounded corners */
-  width: 200px; /* Set desired width */
-  margin-left: 10px; /* Space between label/button and input */
+  width: 100%; /* Match dropdown width to 100% */
 }
 
-.dropdown {
-  width: 200px; /* Match dropdown width */
+.form-group {
+  display: flex;
+  align-items: center; /* Vertically center items */
+  margin-bottom: 20px; /* Space below the form group */
 }
 
+.form-group label {
+  margin-right: 10px; /* Space between label and dropdown */
+  white-space: nowrap; /* Prevent label from wrapping */
+  flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+/* For the number input field */
+.input-container.number-input {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.textbox-labels{
+  margin-bottom: 10px;
+}
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
