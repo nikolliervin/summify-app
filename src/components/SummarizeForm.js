@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { ClipLoader } from 'react-spinners'; 
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import SummifyApi from '../api/SummifyApi'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const SummarizeForm = ({ onSummary }) => {
   const [formatOptions, setFormatOptions] = useState([]);
@@ -10,12 +12,12 @@ const SummarizeForm = ({ onSummary }) => {
   const [numberOfSentences, setNumberOfSentences] = useState(1); 
   const [pdfBase64, setPdfBase64] = useState(''); 
   const [loading, setLoading] = useState(false); 
+  const [summaryText, setSummaryText] = useState('');
 
   useEffect(() => {
     const fetchFormatOptions = async () => {
       try {
         const options = await SummifyApi.getFormatOptions();
-        
         const formattedOptions = Object.entries(options).map(([type, label]) => ({
           value: type,
           label,
@@ -47,6 +49,7 @@ const SummarizeForm = ({ onSummary }) => {
     try {
       const content = inputType.value === 'pdf' ? pdfBase64 : inputValue;
       const summaryResponse = await SummifyApi.summarize(content, inputType.value, numberOfSentences);
+      setSummaryText(summaryResponse);
       onSummary(summaryResponse);
       setInputValue('');
       setNumberOfSentences(1);
@@ -56,6 +59,23 @@ const SummarizeForm = ({ onSummary }) => {
     } finally {
       setLoading(false); 
     }
+  };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(summaryText)
+      .then(() => {
+        toast.success('Summary copied to clipboard!', {
+          position: "bottom-center",
+          transition: Slide,
+        });
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err);
+        toast.error('Failed to copy text.', {
+          position: "bottom-center",
+          transition: Slide,
+        });
+      });
   };
 
   if (!inputType) {
@@ -105,7 +125,6 @@ const SummarizeForm = ({ onSummary }) => {
         )}
       </div>
 
-      
       <div className="input-container">
         <label htmlFor="numberOfSentences" className='textbox-labels'>Number of Sentences:</label>
         <input
@@ -120,13 +139,22 @@ const SummarizeForm = ({ onSummary }) => {
 
       <button type="submit" disabled={loading}>Summarize</button>
 
-
       {loading && (
         <div className="loader">
           <ClipLoader color="#007bff" loading={loading} size={50} />
           <p>Generating summary...</p>
         </div>
       )}
+
+      {summaryText && (
+        <div className="summary-container">
+          <h3>Summarized Text:</h3>
+          <p>{summaryText}</p>
+          <button onClick={handleCopyToClipboard}>Copy to Clipboard</button>
+        </div>
+      )}
+
+      <ToastContainer />
     </form>
   );
 };

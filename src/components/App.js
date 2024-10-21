@@ -15,12 +15,6 @@ const App = () => {
       </header>
       <Menu />
       <SummarizeForm onSummary={setSummary} />
-      {summary && (
-        <div className="summary">
-          <h2>Summary:</h2>
-          <p>{summary}</p>
-        </div>
-      )}
       <footer className="footer">
         <p>&copy; 2024 Summify</p>
       </footer>

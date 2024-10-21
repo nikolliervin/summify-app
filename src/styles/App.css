@@ -165,3 +165,12 @@ input[type="file"] {
   align-items: center;
   margin-top: 20px;
 }
+.summary-container {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+.summary-container h3 {
+  margin: 0;
+}
