@@ -202,3 +202,9 @@ textarea:focus {
   margin-bottom: 8px;
   display: block;
 }
+.file-info {
+  font-size: 14px;
+  color: #333;
+  margin-top: 10px;
+  font-weight: bold;
+}

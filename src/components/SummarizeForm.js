@@ -13,11 +13,11 @@ const SummarizeForm = ({ onSummary }) => {
   const [inputValue, setInputValue] = useState('');
   const [numberOfSentences, setNumberOfSentences] = useState(1); 
   const [pdfBase64, setPdfBase64] = useState(''); 
+  const [pdfName, setPdfName] = useState(''); 
   const [loading, setLoading] = useState(false); 
   const [summaryText, setSummaryText] = useState('');
 
   useEffect(() => {
-    
     const fetchFormatOptions = async () => {
       try {
         const options = await SummifyApi.getFormatOptions();
@@ -34,7 +34,6 @@ const SummarizeForm = ({ onSummary }) => {
         console.error('Failed to fetch format options:', error);
       }
     };
-
 
     const fetchModels = async () => {
       try {
@@ -61,6 +60,7 @@ const SummarizeForm = ({ onSummary }) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setPdfBase64(reader.result.split(',')[1]); 
+      setPdfName(file.name);  
     };
     reader.readAsDataURL(file);
   };
@@ -70,12 +70,13 @@ const SummarizeForm = ({ onSummary }) => {
     setLoading(true); 
     try {
       const content = inputType.value === 'pdf' ? pdfBase64 : inputValue;
-      const summaryResponse = await SummifyApi.summarize(content, inputType.value, numberOfSentences, selectedModel.value); // Send selected model in the API call
+      const summaryResponse = await SummifyApi.summarize(content, inputType.value, numberOfSentences, selectedModel.value);
       setSummaryText(summaryResponse);
       onSummary(summaryResponse);
       setInputValue('');
       setNumberOfSentences(1);
       setPdfBase64(''); 
+      setPdfName('');  
     } catch (error) {
       console.error('Error summarizing content:', error);
     } finally {
@@ -119,7 +120,6 @@ const SummarizeForm = ({ onSummary }) => {
         </div>
       </div>
 
-      
       <div className="form-group">
         <label htmlFor="model">Select Model:</label>
         <div className="select-container">
@@ -134,10 +134,10 @@ const SummarizeForm = ({ onSummary }) => {
       </div>
 
       <div className="input-container">
-        <label htmlFor="inputValue" className='textbox-labels'>
+        <label htmlFor="inputValue" className="textbox-labels">
           {inputType.value === 'pdf' ? 'Upload PDF:' : inputType.value === 'text' ? 'Enter Text:' : 'Insert URL:'}
         </label>
-        
+
         {inputType.value === 'pdf' ? (
           <>
             <input
@@ -148,6 +148,8 @@ const SummarizeForm = ({ onSummary }) => {
               required
             />
             <label className="upload-label" htmlFor="inputValue">Choose File</label>
+                      
+            {pdfName && <p className="file-info">Uploaded File: {pdfName}</p>}
           </>
         ) : inputType.value === 'text' ? (
           <textarea
@@ -170,7 +172,7 @@ const SummarizeForm = ({ onSummary }) => {
       </div>
 
       <div className="input-container">
-        <label htmlFor="numberOfSentences" className='textbox-labels'>Number of Sentences:</label>
+        <label htmlFor="numberOfSentences" className="textbox-labels">Number of Sentences:</label>
         <input
           id="numberOfSentences"
           type="number"
