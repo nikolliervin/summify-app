@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const SummarizeForm = ({ onSummary }) => {
   const [formatOptions, setFormatOptions] = useState([]);
   const [inputType, setInputType] = useState(null);
+  const [models, setModels] = useState([]); 
+  const [selectedModel, setSelectedModel] = useState(null); 
   const [inputValue, setInputValue] = useState('');
   const [numberOfSentences, setNumberOfSentences] = useState(1); 
   const [pdfBase64, setPdfBase64] = useState(''); 
@@ -15,6 +17,7 @@ const SummarizeForm = ({ onSummary }) => {
   const [summaryText, setSummaryText] = useState('');
 
   useEffect(() => {
+    
     const fetchFormatOptions = async () => {
       try {
         const options = await SummifyApi.getFormatOptions();
@@ -32,8 +35,27 @@ const SummarizeForm = ({ onSummary }) => {
       }
     };
 
+
+    const fetchModels = async () => {
+      try {
+        const modelsResponse = await SummifyApi.getModels(); 
+        const formattedModels = Object.entries(modelsResponse).map(([id, name]) => ({
+          value: id,   
+          label: name 
+        }));
+        
+        setModels(formattedModels);
+        if (formattedModels.length > 0) {
+          setSelectedModel(formattedModels[0]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch models:', error);
+      }
+    };
+
     fetchFormatOptions();
-  }, []);
+    fetchModels();
+  }, []); 
 
   const handleFileChange = (file) => {
     const reader = new FileReader();
@@ -48,7 +70,7 @@ const SummarizeForm = ({ onSummary }) => {
     setLoading(true); 
     try {
       const content = inputType.value === 'pdf' ? pdfBase64 : inputValue;
-      const summaryResponse = await SummifyApi.summarize(content, inputType.value, numberOfSentences);
+      const summaryResponse = await SummifyApi.summarize(content, inputType.value, numberOfSentences, selectedModel.value); // Send selected model in the API call
       setSummaryText(summaryResponse);
       onSummary(summaryResponse);
       setInputValue('');
@@ -78,7 +100,7 @@ const SummarizeForm = ({ onSummary }) => {
       });
   };
 
-  if (!inputType) {
+  if (!inputType || !models) {
     return <p>Loading...</p>;
   }
 
@@ -97,9 +119,23 @@ const SummarizeForm = ({ onSummary }) => {
         </div>
       </div>
 
+      
+      <div className="form-group">
+        <label htmlFor="model">Select Model:</label>
+        <div className="select-container">
+          <Select
+            id="model"
+            options={models}
+            value={selectedModel} 
+            onChange={setSelectedModel}  
+            className="react-select"
+          />
+        </div>
+      </div>
+
       <div className="input-container">
         <label htmlFor="inputValue" className='textbox-labels'>
-          {inputType.value === 'pdf' ? 'Upload PDF:' : 'Insert URL:'}
+          {inputType.value === 'pdf' ? 'Upload PDF:' : inputType.value === 'text' ? 'Enter Text:' : 'Insert URL:'}
         </label>
         
         {inputType.value === 'pdf' ? (
@@ -113,6 +149,14 @@ const SummarizeForm = ({ onSummary }) => {
             />
             <label className="upload-label" htmlFor="inputValue">Choose File</label>
           </>
+        ) : inputType.value === 'text' ? (
+          <textarea
+            id="inputValue"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Enter the text you want to summarize"
+            required
+          />
         ) : (
           <input
             id="inputValue"

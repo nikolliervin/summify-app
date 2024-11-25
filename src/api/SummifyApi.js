@@ -20,12 +20,24 @@ class SummifyApi {
     }
   }
 
-  async summarize(content, type, numberOfSentences) {
+  async getModels() {
+    try {
+      const response = await this.api.get('/api/types/models'); // Fetch format types
+      return response.data; // Adjust based on the actual response structure
+    } catch (error) {
+      console.error('Error fetching format options:', error);
+      throw error; // Rethrow the error for further handling if necessary
+    }
+  }
+
+
+  async summarize(content, type, numberOfSentences, model) {
     try {
       const response = await this.api.post('/api/summarize', {
         content,
         type,
         numberOfSentences,
+        model
       });
       return response.data; // Adjust based on the actual response structure
     } catch (error) {

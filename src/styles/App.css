@@ -174,3 +174,31 @@ input[type="file"] {
 .summary-container h3 {
   margin: 0;
 }
+textarea {
+  height: 150px;
+  padding: 12px 16px;
+  font-size: 16px;
+  line-height: 1.5;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Arial', sans-serif;
+  resize: none; /* Disable resizing the textarea */
+}
+
+/* Focused State for Textarea */
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Label Styling */
+.textbox-labels {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}

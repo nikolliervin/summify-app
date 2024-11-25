@@ -13,7 +13,7 @@ const App = () => {
       <header className="header">
         <h1>Summify</h1>
       </header>
-      <Menu />
+      {/* <Menu /> */}
       <SummarizeForm onSummary={setSummary} />
       <footer className="footer">
         <p>&copy; 2024 Summify</p>
